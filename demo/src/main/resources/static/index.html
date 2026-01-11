@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JavaBot 🤖</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    background: linear-gradient(to right, #eef2ff, #f9fafb);
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main {
+    width: 900px;
+    height: 550px;
+    background: white;
+    border-radius: 18px;
+    display: flex;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Robot panel */
+.robot-area {
+    width: 40%;
+    background: linear-gradient(to bottom, #e0e7ff, #f8fafc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px 0 0 18px;
+}
+
+.robot-area img {
+    width: 280px;
+}
+
+/* Chat panel */
+.chat-area {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    padding: 15px;
+    background: #4f46e5;
+    color: white;
+    text-align: center;
+    font-size: 20px;
+}
+
+.messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f3f4f6;
+}
+
+.msg {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 15px;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.user {
+    background: #4f46e5;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 0;
+}
+
+.bot {
+    background: #e5e7eb;
+    color: black;
+    margin-right: auto;
+    border-bottom-left-radius: 0;
+}
+
+.input-area {
+    display: flex;
+    padding: 12px;
+    border-top: 1px solid #ddd;
+}
+
+input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin-left: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+    <!-- Robot -->
+    <div class="robot-area">
+        <img src="robot.png">
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-area">
+        <div class="header">JavaBot Assistant</div>
+
+        <div id="messages" class="messages"></div>
+
+        <div class="input-area">
+            <input id="text" placeholder="Type your message..."
+                   onkeydown="if(event.key==='Enter') send()">
+            <button onclick="send()">Send</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function addMessage(text, type) {
+    let div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+    document.getElementById("messages").appendChild(div);
+    div.scrollIntoView();
+}
+
+function send() {
+    let msg = document.getElementById("text").value.trim();
+    if(msg === "") return;
+
+    addMessage(msg, "user");
+
+    fetch("http://localhost:8080/chat?message=" + msg)
+        .then(res => res.text())
+        .then(reply => addMessage(reply, "bot"));
+
+    document.getElementById("text").value = "";
+}
+</script>
+
+</body>
+</html>
+
+
+<!--http://localhost:8080/index.html      cd demo       .\mvnw spring-boot:run-->
